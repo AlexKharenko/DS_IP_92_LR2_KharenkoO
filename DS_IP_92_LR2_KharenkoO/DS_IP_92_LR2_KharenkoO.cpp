@@ -3,18 +3,22 @@
 #include "windows.h"
 #include <iomanip>
 
+
 using namespace std;
 
 void userinfo();
 void line();
 void outmatr(int** a, int n, int m);
-void outincf(int** a, int** b, int n, int m);
-void outsumf(int** a, int** b, int n, int m);
-void outincs(int** a, int** b, int n, int m);
-void outsums(int** a, int** b, int n, int m);
-void powhighpoint(int** a, int n);
-void fourthtask(int** a, int n);
-void halfpow(int** a, int n, int m);
+void outvidf(int** a, int** b, int** c, int** d, int n, int m);
+int diam(int** a, int n);
+int radius(int** a, int n);
+void center(int** a, int n, int r);
+void yarusy(int** a, int n, int b);
+void outvids(int** a, int** b, int** c, int** d, int n, int m);
+void outdist(int** a, int** b, int n);
+void orientzv(int** a, int** b, int n);
+void multi(int** a, int** b, int n);
+
 
 int main()
 {
@@ -71,6 +75,7 @@ void userinfo() {
 						in >> pairs[i][j];
 					}
 				}
+				in.close();
 				for (int i = 0; i < l1 - 1; i++) {
 					for (int j = 0; j < 2; j++) {
 						cout << pairs[i][j] << " ";
@@ -78,18 +83,46 @@ void userinfo() {
 					cout << endl;
 				}
 				cout << endl;
-				int** matrinc = new int* [cordinates[0]];
+				int** vid = new int* [cordinates[0]];
 				for (int i = 0; i < cordinates[0]; i++) {
-					matrinc[i] = new int[cordinates[1]];
+					vid[i] = new int[cordinates[0]];
 				}
-				int** matrsum = new int* [cordinates[0]];
+				int** aftmult = new int* [cordinates[0]];
 				for (int i = 0; i < cordinates[0]; i++) {
-					matrsum[i] = new int[cordinates[0]];
+					aftmult[i] = new int[cordinates[0]];
 				}
-				outsumf(matrsum, pairs, cordinates[0], cordinates[1]);
-				outincf(matrinc, pairs, cordinates[0], cordinates[1]);
-				powhighpoint(matrsum, cordinates[0]);
-				fourthtask(matrsum, cordinates[0]);
+				int** msum = new int* [cordinates[0]];
+				for (int i = 0; i < cordinates[0]; i++) {
+					msum[i] = new int[cordinates[0]];
+				}
+				int** dist = new int* [cordinates[0]];
+				for (int i = 0; i < cordinates[0]; i++) {
+					dist[i] = new int[cordinates[0]];
+				}
+				system("pause");
+				system("cls");
+				outvidf(vid, pairs, aftmult, msum, cordinates[0], cordinates[1]);
+				outdist(vid, dist, cordinates[0]);
+				system("pause");
+				system("cls");
+				int max = diam(vid, cordinates[0]);
+				int rad = radius(vid, cordinates[0]);
+				center(vid, cordinates[0], rad);
+				yarusy(vid, cordinates[0], max);
+				for (int i = 0; i < cordinates[0]; i++) {
+					delete[] vid[i];
+					delete[] msum[i];
+					delete[] aftmult[i];
+					delete[] dist[i];
+				}
+				delete[] dist;
+				delete[] vid;
+				delete[] msum;
+				delete[] aftmult;
+				for (int i = 0; i < l1 - 1; i++) {
+					delete[] pairs[i];
+				}
+				delete[] pairs;
 			}
 			
 			
@@ -97,7 +130,7 @@ void userinfo() {
 		}
 		if (info == 2) {
 			system("cls");
-			ifstream in("not_orient.txt");
+			ifstream in("orient3.txt");
 			if (in.is_open()) {
 				int count = 0, temp, count_space = 0;
 				char symb;
@@ -130,6 +163,8 @@ void userinfo() {
 					cout << cordinates[i] << " ";
 				}
 				cout << endl;
+				
+
 				int** pairs = new int* [l1 - 1];
 				for (int i = 0; i < l1 - 1; i++) {
 					pairs[i] = new int[2];
@@ -146,17 +181,44 @@ void userinfo() {
 					cout << endl;
 				}
 				cout << endl;
-				int** matrinc = new int* [cordinates[0]];
+				in.close();
+				system("pause");
+				system("cls");
+				int** vid = new int* [cordinates[0]];
 				for (int i = 0; i < cordinates[0]; i++) {
-					matrinc[i] = new int[cordinates[1]];
+					vid[i] = new int[cordinates[0]];
 				}
-				int** matrsum = new int* [cordinates[0]];
+				int** msum = new int* [cordinates[0]];
 				for (int i = 0; i < cordinates[0]; i++) {
-					matrsum[i] = new int[cordinates[0]];
+					msum[i] = new int[cordinates[0]];
 				}
-				outsums(matrsum, pairs, cordinates[0], cordinates[1]);
-				outincs(matrinc, pairs, cordinates[0], cordinates[1]);
-				halfpow(matrinc, cordinates[0], cordinates[1]);
+				int** aftmult = new int* [cordinates[0]];
+				for (int i = 0; i < cordinates[0]; i++) {
+					aftmult[i] = new int[cordinates[0]];
+				}
+				int** dist = new int* [cordinates[0]];
+				for (int i = 0; i < cordinates[0]; i++) {
+					dist[i] = new int[cordinates[0]];
+				}
+				outvids(vid, pairs, aftmult, msum, cordinates[0], cordinates[1]);
+				outdist(vid, dist, cordinates[0]);
+				system("pause");
+				system("cls");
+				orientzv(vid, msum, cordinates[0]);
+				for (int i = 0; i < cordinates[0]; i++) {
+					delete[] vid[i];
+					delete[] msum[i];
+					delete[] aftmult[i];
+					delete[] dist[i];
+				}
+				delete[] dist;
+				delete[] vid;
+				delete[] msum;
+				delete[] aftmult;
+				for (int i = 0; i < l1 - 1; i++) {
+					delete[] pairs[i];
+				}
+				delete[] pairs;
 			}
 		}
 		
@@ -168,6 +230,30 @@ void userinfo() {
 		exit;
 	}
 
+}
+
+void multi(int** a, int** b, int n) {
+	int** sum = new int*[n];
+	for (int i = 0; i < n; i++) {
+		sum[i] = new int[n];
+	}
+	int s = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			for (int k = 0; k < n; k++) {
+				s += a[i][k] * b[k][j];
+			}
+			sum[i][j]=s;
+			s = 0;
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			a[i][j] = sum[i][j];
+		}
+		delete [] sum[i];
+	}
+	delete [] sum;
 }
 
 void outmatr(int** a, int n, int m) {
@@ -188,153 +274,230 @@ void line() {
 	cout << endl;
 }
 
-
-void outincf(int** a, int** b, int n, int m) {
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			a[i][j] = 0;
-			a[b[j][0] - 1][j] = 1;
-			a[b[j][1] - 1][j] = 1;
-		}
-
-	}
-	cout << "Матриця інцидентності: " << endl;
-	outmatr(a, n, m);
-	line();
-}
-
-void outincs(int** a, int** b, int n, int m) {
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			a[i][j] = 0;
-			if (b[j][0] == b[j][1]) {
-				a[b[j][0] - 1][j] = 2;
-			}
-			else {
-				a[b[j][0] - 1][j] = -1;
-				a[b[j][1] - 1][j] = 1;
-			}
-		}
-
-	}
-	cout << "Матриця інцидентності: " << endl;
-	outmatr(a, n, m);
-	line();
-}
-
-void outsumf(int** a, int** b, int n, int m) {
+void outvidf(int** a, int** b, int** c, int** d, int n, int m) {
+	cout << "-1 == infinity" << endl;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
-			a[i][j] = 0;
+			a[i][j] = -1;
 			for (int k = 0; k < m; k++) {
 
 				a[b[k][0] - 1][b[k][1] - 1] = 1;
 				a[b[k][1] - 1][b[k][0] - 1] = 1;
 			}
+			if (i == j) {
+				a[i][j] = 0;
+				d[i][j] = 0;
+				c[i][j] = 0;
+			}
 		}
 	}
-
 	cout << "Матриця суміжності: " << endl;
+	outmatr(a, n, n);
+	line();
+	for (int k = 1; k < n; k++) {
+		multi(c, d, n);
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (a[i][j] == -1 && c[i][j] != 0 && i != j && a[i][j] < k) {
+					a[i][j] = k + 1;
+				}
+			}
+		}
+	}
+	cout << "Матриця відстаней: " << endl;
 	outmatr(a, n, n);
 	line();
 }
 
-void outsums(int** a, int** b, int n, int m) {
+int diam(int** a, int n){
+	int max = 0;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
-			a[i][j] = 0;
+			if (a[i][j] > max) {
+				max = a[i][j];
+			}
+		}
+	}
+	cout << "Діаметр графа: " << max << "." << endl;
+	line();
+	return max;
+}
+
+int radius(int** a, int n) {
+	int min = 2;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (a[i][j] < min && a[i][j] != 1 && a[i][j] != 0) {
+				min = a[i][j];
+			}
+		}
+	}
+	cout << "Радіус графа: " << min << "." << endl;
+	line();
+	return min;
+}
+
+void center(int** a, int n, int r) {
+	int* p = new int[n];
+	int q = 0, k = 0, c = 0;
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			if (a[i][j] == r) {
+				c = i + 1;
+				p[q] = c;
+				q++;
+				break;
+			}
+		}
+	}
+	cout << "Центри графа: ";
+	while (k < q ) {
+		cout << p[k] << " ";
+		k++;
+	}
+	cout << endl;
+	line();
+}
+
+void yarusy(int** a, int n, int b) {
+	int k = 1;
+	while (k <= b) {
+		for (int i = 0; i < n; i++)
+		{
+			cout << "Ярус " << k << " для вершини " << i + 1 << ": ";
+			for (int j = 0; j < n; j++)
+			{
+				if (a[i][j] == k) {
+					cout << j + 1 << ", ";
+				}
+			}
+			cout << endl;
+		}
+		line();
+		k++;
+	}
+}
+
+void outvids(int** a, int** b,int** c, int** d, int n, int m) {
+	cout << "-1 == infinity" << endl;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
 			for (int k = 0; k < m; k++) {
-
+				if (i != (b[k][0] - 1) || j != (b[k][1] - 1)) {
+					a[i][j] = -1;
+					d[i][j] = 0;
+					c[i][j] = 0;
+				}
 				a[b[k][0] - 1][b[k][1] - 1] = 1;
+				d[b[k][0] - 1][b[k][1] - 1] = 1;
+				c[b[k][0] - 1][b[k][1] - 1] = 1;
+			}
+			if (i == j) {
+				a[i][j] = 0;
+				d[i][j] = 0;
+				c[i][j] = 0;
 			}
 		}
 	}
-
 	cout << "Матриця суміжності: " << endl;
+	outmatr(a, n, n);
+	line();
+	for (int k = 1; k < n; k++) {
+		multi(c, d, n);
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (a[i][j] == -1 && c[i][j] != 0 && i != j && a[i][j] <k) {
+					a[i][j] = k+1;
+				}
+			}
+		}	
+	}	
+	cout << "Матриця відстаней: " << endl;
 	outmatr(a, n, n);
 	line();
 }
 
-
-void powhighpoint(int** a, int n) {
-	int* c = new int[n];
+void outdist(int** a,int** b, int n) {
+	cout << "Матриця досягнення: " << endl;
 	for (int i = 0; i < n; i++) {
-		int q = 0;
 		for (int j = 0; j < n; j++) {
-			if (a[i][j] == 1) {
-				q++;
+			b[i][j] = a[i][j];
+			if (i != j && a[i][j] == -1) {
+				b[i][j] = 0;
 			}
-			else {}
-		}
-		c[i] = q;
-		cout << "Степінь вершини №" << i + 1 << ": " << q << "." << endl;
-		q = 0;
-	}
-	int l = 0;
-	for (int i = 0; i < n; i++) {
-		if (c[0] != c[i]) {
-			l++;
+			else {
+				b[i][j] = 1;
+			}
 		}
 	}
-	if (l == 0) {
-		cout << "Граф є однорідним. Степінь однорідності: " << c[0] << endl;
-	}
-
+	outmatr(b, n, n);
 	line();
 }
 
-void fourthtask(int** a, int n) {
-	int v = 0, iz = 0;
+void orientzv(int** a, int** b,  int n) {
+	int** add = new int* [n];
 	for (int i = 0; i < n; i++) {
-		int q = 0;
-
+		add[i] = new int[n];
+	}
+	int** add2 = new int* [n];
+	for (int i = 0; i < n; i++) {
+		add2[i] = new int[n];
+	}
+	int** slab = new int* [n];
+	for (int i = 0; i < n; i++) {
+		slab[i] = new int[n];
+	}
+	int sz = 0, oz = 0, slz = 0;
+	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
-			if (a[i][j] == 1) {
-				q++;
+			add[i][j] = a[i][j] + a[j][i];
+			add2[i][j] = b[i][j] + b[j][i];
+			if (i == j) {
+				add2[i][j] += 1;
 			}
-			else {}
+			if (a[i][j] ==1 ) {
+				sz += 1;
+			}
+			if (add[i][j]>0) {
+				oz += 1;
+			}
 		}
-		if (q == 1) {
-			cout << "Вершина №" << i + 1 << " є висячою." << endl;
-			v++;
+	}
+	if (sz == n*n) {
+		cout << "Сильнозв'язний граф." << endl;
+	}
+	if (oz == n*n) {
+		cout << "Однобічно-зв'язний граф." << endl;
+	}
+	if (oz != n * n && sz != n * n) {
+		for (int i = 1; i < n-1; i++) {
+			multi(add2, add2, n);
 		}
-		if (q == 0) {
-			cout << "Вершина №" << i + 1 << " є ізольованою." << endl;
-			iz++;
-		}
-		q = 0;
+		for (int j = 0; j < n; j++) {
+			for (int k = 0; k < n; k++)
+			{
+				if (add2[j][k] > 0) {
+					slz += 1;
+				}
+			}
+		}	
 	}
-	if (v == 0 && iz > 0) {
-		cout << "Немає висячих вершин." << endl;
+	if (slz == n*n) {
+		cout << "Слабкозв'язний граф." << endl;
 	}
-	if (iz == 0 && v > 0) {
-		cout << "Немає ізольованих вершин." << endl;
+	if (oz != n * n && sz != n * n && slz != n * n) {
+		cout << "Граф не зв'язний!" << endl;
 	}
-	if (v == 0 && iz == 0) {
-		cout << "Немає висячих та ізольованих вершин." << endl;
-	}
-	line();
-}
-
-void halfpow(int** a, int n, int m) {
-	int za = 0, v = 0;
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			if (a[i][j] == 1) {
-				za++;
-			}
-			if (a[i][j] == -1) {
-				v++;
-			}
-			if (a[i][j] == 2) {
-				v++;
-				za++;
-			}
-		}
+		delete[] add[i];
+		delete[] add2[i];
+		delete[] slab[i];
 	}
-	cout << "Напівстепені виходу: " << v << " та заходу: " << za << endl;
-	line();
+	delete[] add;
+	delete[] add2;
+	delete[] slab;
 }
-
 
 
